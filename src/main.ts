@@ -41,6 +41,12 @@ import {
 	update,
 	without,
 	adjust,
+	lens,
+	lensProp,
+	set,
+	view,
+	over,
+	toUpper,
 } from 'ramda'
 
 const tasks = [
@@ -167,3 +173,23 @@ update(1, 15, nums) // update by index
 without([30, 40, 50], nums) // [10, 20, 33]
 
 adjust(2, multiply(10), nums) // [(10, 20, 300, 33, 50)]
+
+/* 
+	Lenses 
+*/
+
+const someone = {
+	name: 'unknown',
+	age: Infinity,
+	sex: 'female',
+	loot: {
+		weapon: 'sword',
+	},
+}
+
+// takes getter and setter
+// same as lensProp
+const nameLens = lens(prop('name'), assoc('name'))
+view(lensProp('name'), someone) // unknown
+set(lensProp('name'), 'newname', someone)
+console.log(over(lensProp('name'), toUpper, someone))
