@@ -31,6 +31,16 @@ import {
 	assoc,
 	evolve,
 	mergeAll,
+	nth,
+	slice,
+	includes,
+	takeLast,
+	insert,
+	append,
+	prepend,
+	update,
+	without,
+	adjust,
 } from 'ramda'
 
 const tasks = [
@@ -139,7 +149,21 @@ const a = { a: 10 }
 const b = { b: 20 }
 const c = mergeAll([a, b]) // {a: 10, b: 20}
 
-
 /*  
 /* Immutability and Arrays
 */
+
+const nums: Array<number> = [10, 20, 30, 33, 50]
+nth(3, nums) // 33
+nth(-2, nums) // 33
+slice(2, 5)(nums) // [30, 33, 50]
+includes(20, nums) // true
+take(1, nums) // [10]
+takeLast(2, nums) // [33, 50]
+insert(2, 35, nums) // [10, 20, 35...]
+append(70, nums) // push
+prepend(0, nums) // shift
+update(1, 15, nums) // update by index
+without([30, 40, 50], nums) // [10, 20, 33]
+
+adjust(2, multiply(10), nums) // [(10, 20, 300, 33, 50)]
