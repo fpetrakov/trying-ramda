@@ -47,6 +47,9 @@ import {
 	view,
 	over,
 	toUpper,
+	map,
+	add,
+	transduce,
 } from 'ramda'
 
 const tasks = [
@@ -158,7 +161,6 @@ const c = mergeAll([a, b]) // {a: 10, b: 20}
 /*  
 /* Immutability and Arrays
 */
-
 const nums: Array<number> = [10, 20, 30, 33, 50]
 nth(3, nums) // 33
 nth(-2, nums) // 33
@@ -171,13 +173,11 @@ append(70, nums) // push
 prepend(0, nums) // shift
 update(1, 15, nums) // update by index
 without([30, 40, 50], nums) // [10, 20, 33]
-
 adjust(2, multiply(10), nums) // [(10, 20, 300, 33, 50)]
 
 /* 
 	Lenses 
 */
-
 const someone = {
 	name: 'unknown',
 	age: Infinity,
@@ -193,3 +193,13 @@ const nameLens = lens(prop('name'), assoc('name'))
 view(lensProp('name'), someone) // unknown
 set(lensProp('name'), 'newname', someone)
 console.log(over(lensProp('name'), toUpper, someone))
+
+/* 
+	Transduce
+*/
+
+// we could also do the same without transduce and go over array 3 times
+// but with transduce it goes over it only ONCE by applying all transform functions at once on each item
+const numbers = [1, 2, 3, 4]
+const transducer = compose(map(add(2)), map(add(1)), take(2))
+transduce(transducer, append, [], numbers) // => [4, 5]
