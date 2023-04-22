@@ -20,6 +20,17 @@ import {
 	equals,
 	always,
 	T,
+	prop,
+	gte,
+	pick,
+	has,
+	path,
+	propOr,
+	keys,
+	values,
+	assoc,
+	evolve,
+	mergeAll,
 } from 'ramda'
 
 const tasks = [
@@ -72,7 +83,7 @@ const settings: { lineWidth?: number } = {}
 // checks if the second argument null or undefined
 const lineWidth = defaultTo(80, settings.lineWidth)
 
-const water = temperature =>
+const water = (temperature: number) =>
 	cond([
 		[equals(0), always('water freezes at 0 C')],
 		[equals(100), always('water boils at 100 C')],
@@ -80,3 +91,55 @@ const water = temperature =>
 	])(temperature)
 
 water(100) // water boils at 100 C
+
+/*  
+/* Immutability and Objects
+*/
+
+type Person = {
+	birthCountry: string
+	naturalizationDate: string
+	age: number
+}
+
+const OUR_COUNTRY = 'Russia'
+const wasBornInCountry = compose(equals(OUR_COUNTRY), prop('birthCountry'))
+const wasNaturalized = compose(Boolean, prop('naturalizationDate'))
+const isOver18 = compose(gte(__, 18), prop('age'))
+
+const pers = {
+	name: 'pers',
+	age: 21,
+	address: {
+		city: 'Kaluga',
+	},
+}
+
+const nameAndAge = pick(['name', 'age'])
+nameAndAge(pers) // {name: 'pers', age: 21}
+
+const hasName = has('name')
+
+// returns undefined if not found while prop raises an error
+const city = path(['address', 'city'], pers) // 'Kaluga'
+
+const height = propOr(200, 'height')(pers)
+console.log(height)
+keys(pers)
+values(pers)
+
+// updating and removing props
+
+const newObj = assoc('name', 'somebody', pers)
+// evolve can't add new props
+const celebrateBirthday = evolve({ age: inc }) // returns new object
+const twentytwo = celebrateBirthday(newObj)
+
+const a = { a: 10 }
+const b = { b: 20 }
+const c = mergeAll([a, b]) // {a: 10, b: 20}
+
+
+/*  
+/* Immutability and Arrays
+*/
